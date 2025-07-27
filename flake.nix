@@ -57,11 +57,7 @@
       devShells.default = pkgs.mkShellNoCC {
         buildInputs = [
           pkgs.bun
-          pkgs.biome
-          pkgs.typescript
-          pkgs.vscode-langservers-extracted
           pkgs.nixd
-          pkgs.typescript-language-server
         ];
       };
 
