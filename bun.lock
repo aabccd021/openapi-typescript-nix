@@ -4,7 +4,7 @@
     "": {
       "name": "openapi-typescript",
       "dependencies": {
-        "openapi-typescript": "^7.8.0",
+        "openapi-typescript": "latest",
       },
     },
   },
