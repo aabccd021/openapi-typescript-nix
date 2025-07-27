@@ -31,9 +31,9 @@
         final: prev: {
           openapi-typescript = final.writeShellApplication {
             name = "openapi-typescript";
+            runtimeEnv.NODE_PATH = "${nodeModules}/node_modules";
             text = ''
-              exec ${final.bun}/bin/bunx --bun \
-                ${nodeModules}/node_modules/openapi-typescript/bin/cli.js "$@"
+              exec ${final.bun}/bin/bunx --bun openapi-typescript "$@"
             '';
           };
 
