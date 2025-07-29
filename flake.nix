@@ -33,7 +33,7 @@
             name = "openapi-typescript";
             text = ''
               ln -s ${nodeModules}/node_modules ./node_modules
-              exec ${final.bun}/bin/bunx --bun openapi-typescript "$@"
+              exec ${final.bun}/bin/bun --bun ./node_modules/openapi-typescript/bin/cli.js "$@"
             '';
           };
 
