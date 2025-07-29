@@ -31,8 +31,8 @@
         final: prev: {
           openapi-typescript = final.writeShellApplication {
             name = "openapi-typescript";
-            runtimeEnv.NODE_PATH = "${nodeModules}/node_modules";
             text = ''
+              ln -s ${nodeModules}/node_modules ./node_modules
               exec ${final.bun}/bin/bunx --bun openapi-typescript "$@"
             '';
           };
@@ -54,6 +54,16 @@
 
       formatter = treefmtEval.config.build.wrapper;
 
+      testSchema = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/PaddleHQ/paddle-openapi/refs/heads/main/v1/openapi.yaml";
+        hash = "sha256-5XxRUHfMhbQs5wIQBJ5QqjTV/Q0YXc7gcdESCjLcS1A=";
+      };
+
+      test = pkgs.runCommand "test" { } ''
+        mkdir --parent "$out"
+        ${pkgs.openapi-typescript}/bin/openapi-typescript ${testSchema} --output "$out/paddle.ts"
+      '';
+
       devShells.default = pkgs.mkShellNoCC {
         buildInputs = [
           pkgs.bun
@@ -62,6 +72,7 @@
       };
 
       packages = devShells // {
+        test = test;
         formatting = treefmtEval.config.build.check self;
         formatter = formatter;
         allInputs = collectInputs inputs;
