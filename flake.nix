@@ -32,7 +32,8 @@
           openapi-typescript = final.writeShellApplication {
             name = "openapi-typescript";
             text = ''
-              exec ${final.bun}/bin/bun --bun ${nodeModules}/node_modules/openapi-typescript/bin/cli.js "$@"
+              exec ${final.bun}/bin/bun --bun \
+                ${nodeModules}/node_modules/openapi-typescript/bin/cli.js "$@"
             '';
           };
 
