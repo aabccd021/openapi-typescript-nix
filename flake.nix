@@ -4,7 +4,6 @@
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.treefmt-nix.url = "github:numtide/treefmt-nix";
-  inputs.bun2nix.url = "github:baileyluTCD/bun2nix";
 
   outputs =
     { self, ... }@inputs:
@@ -23,22 +22,30 @@
           ) is
         );
 
-      nodeModules = inputs.bun2nix.lib.x86_64-linux.mkBunNodeModules {
-        packages = import ./bun.nix;
-      };
-
       overlay = (
-        final: prev: {
+        final: prev:
+        let
+          npm_deps = import ./npm_deps.nix { pkgs = final; };
+        in
+        {
           openapi-typescript = final.writeShellApplication {
             name = "openapi-typescript";
             text = ''
               exec ${final.bun}/bin/bun --bun \
-                ${nodeModules}/node_modules/openapi-typescript/bin/cli.js "$@"
+                ${npm_deps}/lib/node_modules/openapi-typescript/bin/cli.js "$@"
             '';
           };
 
         }
       );
+
+      update-npm-deps = pkgs.writeShellApplication {
+        name = "update-npm-deps";
+        text = ''
+          repo_root=$(git rev-parse --show-toplevel)
+          nix run github:aabccd021/bun3nix install openapi-typescript > "$repo_root/npm_deps.nix"
+        '';
+      };
 
       pkgs = import inputs.nixpkgs {
         system = "x86_64-linux";
@@ -78,7 +85,7 @@
         allInputs = collectInputs inputs;
         openapi-typescript = pkgs.openapi-typescript;
         default = pkgs.openapi-typescript;
-        bun2nix = inputs.bun2nix.packages.x86_64-linux.default;
+        update-npm-deps = update-npm-deps;
       };
     in
     {

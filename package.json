@@ -1,9 +1,0 @@
-{
-  "name": "openapi-typescript",
-  "dependencies": {
-    "openapi-typescript": "latest"
-  },
-  "scripts": {
-    "postinstall": "cd $(dirname $npm_package_json) && nix run .#bun2nix -- --output-file bun.nix"
-  }
-}
